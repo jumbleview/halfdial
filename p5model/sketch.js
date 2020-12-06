@@ -33,11 +33,13 @@ var radiush = 65;
 var angle = 270;
 var angleh = 270;
 var m = 0;
-var minutes;
+var minutes=0;
+let hours=0;
+let mAngle;
+let hAngle;
 function setup() {
   createCanvas(1000, 350);
 }
-
 
 function draw() {
   background(220);
@@ -46,28 +48,26 @@ function draw() {
   drawDial(4*x, y, radius + 15, 15, true); 
 
   if (!mouseIsPressed) {
-    angle+=1;
-    if (angle%12 === 0 ) {
-      angleh++;
-    }
-    
-    if (angle === 360) {
-      angle = 0;
-    }
-    
-    if (angleh === 360) {
-      angleh = 0;
-    }
-    m += 1/6;
-    if (m >= 720) {
+    m++;
+    if (m === 720) {
       m = 0;
     }
+    minutes = m%60;
+    hours = m/60;
+  }
+  mAngle = minutes*6 - 90; // 360/60  
+  if (mAngle < 0 ) {
+    mAngle += 360;
+  }
+  hAngle = hours*30 - 90 // 360/12
+  if (hAngle < 0 ) {
+    hAngle += 360;
   }
 
+
   textSize(28);
-  minutes = Math.floor(m);
-  let sm = (minutes%60).toFixed(0);  
-  let sh = Math.floor(minutes/60).toFixed(0);
+  let sm = minutes.toFixed(0);  
+  let sh = Math.floor(hours).toFixed(0);
 
   if (sh.length === 1 ) {
     sh = "0" + sh
@@ -84,32 +84,32 @@ function draw() {
   // Full dial arcs 
   noFill()
   stroke(255, 255, 255); // Clock minutes  (White)
-  arc(x, y, 2*radius, 2*radius, radians(270), radians(angle))
+  arc(x, y, 2*radius, 2*radius, radians(270), radians(mAngle))
   stroke(0, 255, 0); // Clock hours (green)
-  arc(x, y, 2*radiush, 2*radiush, radians(270), radians(angleh))
+  arc(x, y, 2*radiush, 2*radiush, radians(270), radians(hAngle))
 
   // Hours hand
   stroke(255, 255, 255); // Clock minutes hand (White)
-  var newPos = getPolar(3*x, y, radius, angle);
+  var newPos = getPolar(3*x, y, radius, mAngle);
   line(3*x, y, newPos[0], newPos[1]);
   stroke(0,255, 0);   // Hours hand (green)
-  var newPosh = getPolar(3*x, y, radiush, angleh);
+  var newPosh = getPolar(3*x, y, radiush, hAngle);
   line(3*x, y, newPosh[0], newPosh[1]);
 
 
 
   // Half dial arcs
   stroke(255, 255, 255); // Clock minutes (White)
-  if (angle <= 90 ||  angle >= 270) {
-    arc(4*x, y, 2*radius, 2*radius, radians(270), radians(angle))
+  if (mAngle <= 90 ||  mAngle >= 270) {
+    arc(4*x, y, 2*radius, 2*radius, radians(270), radians(mAngle))
   } else {
-    arc(4*x, y, 2*radius, 2*radius, radians(180 - angle), radians(90))
+    arc(4*x, y, 2*radius, 2*radius, radians(180 - mAngle), radians(90))
   }
   stroke(0, 255, 0); // Clock hours (Green)
-  if (angleh < 90 ||  angleh >= 270) {
-    arc(4*x, y, 2*radiush, 2*radiush, radians(270), radians(angleh))
+  if (hAngle < 90 ||  hAngle >= 270) {
+    arc(4*x, y, 2*radiush, 2*radiush, radians(270), radians(hAngle))
   } else {
-    arc(4*x, y, 2*radiush, 2*radiush, radians(180 - angleh), radians(90))
+    arc(4*x, y, 2*radiush, 2*radiush, radians(180 - hAngle), radians(90))
   }
-  frameRate();
+  frameRate(20);
 }

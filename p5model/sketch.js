@@ -1,5 +1,6 @@
-// Get coordinates from a rotation (x, y, radius, angle)
-function getPolar(x, y, r, a) {
+// toCartesian calculates point coordinates based on coordinates of
+// center, radius and angle (in degrees)
+function toCartesian(x, y, r, a) {
   // Get angle as radians
   var fa = a*(PI/180);
   // Convert coordinates
@@ -12,7 +13,8 @@ function getPolar(x, y, r, a) {
   
   return [fx, fy];
 }
-
+// drawDial draws Clock dial based on center coordinates, radius, length of dial
+// mark and bool flag (true in case of half dial, false otherwise)
 function drawDial(x0, y0, rs, delta, isHalf) {
   strokeWeight(1);
   stroke(0, 0, 0);
@@ -20,34 +22,57 @@ function drawDial(x0, y0, rs, delta, isHalf) {
     if (isHalf && (a > 90 && a < 270)) {
       continue ;
     }
-    let startMark = getPolar(x0, y0, rs, a);
-    let endMark =  getPolar(x0, y0, rs + delta, a);
+    let startMark = toCartesian(x0, y0, rs, a);
+    let endMark =  toCartesian(x0, y0, rs + delta, a);
     line(startMark[0],startMark[1],endMark[0],endMark[1]);
   }
 }
-
-var x = 200;
-var y = 175;
-var radius = 100;
-var radiush = 65;
-var angle = 270;
-var angleh = 270;
+// Variables
+var xClock = 200;
+var y = 200;
+var xDial = 700;
+var xHalfDial = 1050;
+const xDigital = 10;
+const yDigital = 35
+var radius = 130;
+var radiush = 90;
 var m = 0;
 var minutes=0;
 let hours=0;
-let mAngle;
-let hAngle;
+let mAngle=0;
+let hAngle=0;
+// Function 'setup' and 'draw' required by p5 lib.
+let button;
+let runMode = true;
+
+function changeRunMode() {
+  runMode = !runMode;
+  button.remove();
+  setButton();
+}
+function setButton(){
+  if (runMode) {
+    button = createButton('stop');
+  } else {
+    button = createButton('start');
+  }
+  button.style('font-size', '50px');
+  button.position(375,500);
+  button.mousePressed(changeRunMode)
+}
+
 function setup() {
-  createCanvas(1000, 350);
+  createCanvas(1280, 720);
+  setButton();
 }
 
 function draw() {
   background(220);
-  drawDial(x, y, radius + 15, 15, false); 
-  drawDial(3*x, y, radius + 15, 15, false);  
-  drawDial(4*x, y, radius + 15, 15, true); 
+  drawDial(xClock, y, radius + 15, 15, false); 
+  drawDial(xDial, y, radius + 15, 15, false);  
+  drawDial(xHalfDial, y, radius + 15, 15, true); 
 
-  if (!mouseIsPressed) {
+  if (runMode) {
     m++;
     if (m === 720) {
       m = 0;
@@ -64,7 +89,6 @@ function draw() {
     hAngle += 360;
   }
 
-
   textSize(28);
   let sm = minutes.toFixed(0);  
   let sh = Math.floor(hours).toFixed(0);
@@ -77,39 +101,36 @@ function draw() {
   }
 
   let simTime = sh + ":" + sm ;
-  text(simTime,2*x,35); 
+  text(simTime,xDigital,yDigital); 
 
   strokeWeight(10);
-
-  // Full dial arcs 
-  noFill()
-  stroke(255, 255, 255); // Clock minutes  (White)
-  arc(x, y, 2*radius, 2*radius, radians(270), radians(mAngle))
-  stroke(0, 255, 0); // Clock hours (green)
-  arc(x, y, 2*radiush, 2*radiush, radians(270), radians(hAngle))
-
-  // Hours hand
-  stroke(255, 255, 255); // Clock minutes hand (White)
-  var newPos = getPolar(3*x, y, radius, mAngle);
-  line(3*x, y, newPos[0], newPos[1]);
-  stroke(0,255, 0);   // Hours hand (green)
-  var newPosh = getPolar(3*x, y, radiush, hAngle);
-  line(3*x, y, newPosh[0], newPosh[1]);
-
-
-
-  // Half dial arcs
+  // Normal Clock
   stroke(255, 255, 255); // Clock minutes (White)
   if (mAngle <= 90 ||  mAngle >= 270) {
-    arc(4*x, y, 2*radius, 2*radius, radians(270), radians(mAngle))
+    arc(xHalfDial, y, 2*radius, 2*radius, radians(270), radians(mAngle))
   } else {
-    arc(4*x, y, 2*radius, 2*radius, radians(180 - mAngle), radians(90))
+    arc(xHalfDial, y, 2*radius, 2*radius, radians(180 - mAngle), radians(90))
   }
   stroke(0, 255, 0); // Clock hours (Green)
   if (hAngle < 90 ||  hAngle >= 270) {
-    arc(4*x, y, 2*radiush, 2*radiush, radians(270), radians(hAngle))
+    arc(xHalfDial, y, 2*radiush, 2*radiush, radians(270), radians(hAngle))
   } else {
-    arc(4*x, y, 2*radiush, 2*radiush, radians(180 - hAngle), radians(90))
+    arc(xHalfDial, y, 2*radiush, 2*radiush, radians(180 - hAngle), radians(90))
   }
+  // Full Dial Arcs Clock
+  noFill()
+  stroke(255, 255, 255); // Clock minutes  (White)
+  arc(xDial, y, 2*radius, 2*radius, radians(270), radians(mAngle))
+  stroke(0, 255, 0); // Clock hours (green)
+  arc(xDial, y, 2*radiush, 2*radiush, radians(270), radians(hAngle))
+
+  // Half Dial Arc Clock
+  stroke(255, 255, 255); // Clock minutes hand (White)
+  var newPos = toCartesian(xClock, y, radius, mAngle);
+  line(xClock, y, newPos[0], newPos[1]);
+  stroke(0,255, 0);   // Hours hand (green)
+  var newPosh = toCartesian(xClock, y, radiush, hAngle);
+  line(xClock, y, newPosh[0], newPosh[1]);
+  
   frameRate(20);
 }

@@ -57,6 +57,8 @@ function setButton(){
     button = createButton('start');
   }
   button.style('font-size', '50px');
+  let col = color(0,128,255); //use color instead of fill
+  button.style('color',col);
   button.position(375,500);
   button.mousePressed(changeRunMode)
 }
@@ -88,7 +90,7 @@ function draw() {
   if (hAngle < 0 ) {
     hAngle += 360;
   }
-
+  // Digital Clock
   textSize(28);
   let sm = minutes.toFixed(0);  
   let sh = Math.floor(hours).toFixed(0);
@@ -103,8 +105,23 @@ function draw() {
   let simTime = sh + ":" + sm ;
   text(simTime,xDigital,yDigital); 
 
+  noFill()
   strokeWeight(10);
-  // Normal Clock
+  // Regular Clock with Hands
+  stroke(255, 255, 255); // Clock minutes hand (White)
+  var newPos = toCartesian(xClock, y, radius, mAngle);
+  line(xClock, y, newPos[0], newPos[1]);
+  stroke(0,255, 0);   // Hours hand (green)
+  var newPosh = toCartesian(xClock, y, radiush, hAngle);
+  line(xClock, y, newPosh[0], newPosh[1]);
+
+  // Full Dial Arcs Clock
+  stroke(255, 255, 255); // Clock minutes  (White)
+  arc(xDial, y, 2*radius, 2*radius, radians(270), radians(mAngle))
+  stroke(0, 255, 0); // Clock hours (green)
+  arc(xDial, y, 2*radiush, 2*radiush, radians(270), radians(hAngle))
+
+  // Half Dial Arc Clock
   stroke(255, 255, 255); // Clock minutes (White)
   if (mAngle <= 90 ||  mAngle >= 270) {
     arc(xHalfDial, y, 2*radius, 2*radius, radians(270), radians(mAngle))
@@ -117,20 +134,6 @@ function draw() {
   } else {
     arc(xHalfDial, y, 2*radiush, 2*radiush, radians(180 - hAngle), radians(90))
   }
-  // Full Dial Arcs Clock
-  noFill()
-  stroke(255, 255, 255); // Clock minutes  (White)
-  arc(xDial, y, 2*radius, 2*radius, radians(270), radians(mAngle))
-  stroke(0, 255, 0); // Clock hours (green)
-  arc(xDial, y, 2*radiush, 2*radiush, radians(270), radians(hAngle))
-
-  // Half Dial Arc Clock
-  stroke(255, 255, 255); // Clock minutes hand (White)
-  var newPos = toCartesian(xClock, y, radius, mAngle);
-  line(xClock, y, newPos[0], newPos[1]);
-  stroke(0,255, 0);   // Hours hand (green)
-  var newPosh = toCartesian(xClock, y, radiush, hAngle);
-  line(xClock, y, newPosh[0], newPosh[1]);
-  
+ 
   frameRate(20);
 }

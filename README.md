@@ -13,7 +13,8 @@ clock with LEDs.
 
 ## Model
 After cloning git project open with browser file "index.html" in the directory 
-"p5model".
+"p5model". Push the button "start" to initiate simulation. Push the "stop" to 
+stop it.
 
 ## Circuit Diagram
 TODO

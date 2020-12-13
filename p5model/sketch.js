@@ -2,16 +2,12 @@
 // center, mRadius and angle (in degrees)
 function toCartesian(x, y, r, a) {
   // Get angle as radians
-  var fa = a*(PI/180);
+  const fa = a*(PI/180);
   // Convert coordinates
-  var dx = r* cos(fa);
-  var dy = r* sin(fa);
-  
-  // Add origin values
-  var fx = x + dx;
-  var fy  = y + dy;
-  
-  return [fx, fy];
+  const dx = r* cos(fa);
+  const dy = r* sin(fa);
+  // Return array of two cartesian coordinates: x and y
+  return [x+dx, y+dy];
 }
 // drawDial draws Clock dial based on center coordinates, mRadius, length of dial
 // mark and bool flag (true in case of half dial, false otherwise)
@@ -28,28 +24,15 @@ function drawDial(x0, y0, rs, delta, isHalf) {
   }
 }
 // Variables
-var xClock = 200;
-var y = 200;
-var xDial = 700;
-var xHalfDial = 1050;
-const xDigital = 10;
-const yDigital = 35
-var mRadius = 130;
-var hRadius = 90;
 var m = 0;
 var minutes=0;
 let hours=0;
 let mAngle=0;
 let hAngle=0;
 
-let xLed = 900;
-let yLed = 525;
-let rmLed = 140;
-let rhLed = 90;
-
 // Function 'setup' and 'draw' required by p5 lib.
 let button;
-let runMode = true;
+let runMode = false;
 
 function changeRunMode() {
   runMode = !runMode;
@@ -75,6 +58,20 @@ function setup() {
 }
 
 function draw() {
+  const xClock = 200;
+  const y = 200;
+  const xDial = 700;
+  const xHalfDial = 1050;
+  const xDigital = 10;
+  const yDigital = 35
+  const mRadius = 130;
+  const hRadius = 90;
+
+  const xLed = 900;
+  const yLed = 525;
+  const rmLed = 140;
+  const rhLed = 90;
+
   background(220);
   drawDial(xClock, y, mRadius + 15, 15, false); 
   drawDial(xDial, y, mRadius + 15, 15, false);  
@@ -110,10 +107,10 @@ function draw() {
 
   let simTime = sh + ":" + sm ;
   text(simTime,xDigital,yDigital); 
-
   text("12", xLed -20, yLed - rmLed -20)
   text("3 / 9", xLed + rmLed + 20, yLed + 10)
   text("6", xLed -10, yLed + rmLed + 40)
+
 
   noFill()
   strokeWeight(10);
@@ -146,6 +143,10 @@ function draw() {
   }
  
   // Led Half Dial Clock
+
+  const smallLed = 5;
+  const bigLed = 15;
+  
   mAngle = Math.floor(mAngle);
   hAngle = Math.floor(hAngle);
   const minColor = [255,255,255];
@@ -191,77 +192,41 @@ function draw() {
       }
     }
   }
-
+  // Hours Led
   let ih = Math.floor(hours);
-  if (ih < 6) {
-    for (let i = 0; i <= 6 ; i++) {
-      let ha = hourToAngle(i);
-      if (i <= ih) {
-        setLed(hourColor, 15,rhLed, ha);            
-      } else {
-        setLed(offColor, 15,rhLed, ha);    
-      }
+  let i = 0;
+  let max = 6;
+  if (ih >= 6) {
+    i = 6;
+    max = 12;
+  }
+  for (; i <= max ; i++) {
+    let ha = hourToAngle(i);
+    if (i <= ih) {
+      setLed(hourColor, bigLed,rhLed, ha);            
+    } else {
+      setLed(offColor, bigLed,rhLed, ha);    
     }
-  } else {
-    for (let i = 6; i <=12; i++) {
-      let ha = hourToAngle(i);
-      if (i <= ih) {
-        setLed(hourColor, 15,rhLed, ha);            
-      } else {
-        setLed(offColor, 15,rhLed, ha);    
-      }
-    }
-  }  
-
+  }
+  // Minutes Led
   let im = Math.floor(minutes);
-  if (im < 30) {
-    for (let i = 0; i <= 30 ; i++) {
-      let mw = 5;
-      if (i%5 === 0 ){
-        mw = 15;
-      }
-      let ma = minToAngle(i);
-      if (i <= im) {
-        setLed(minColor, mw,rmLed, ma);            
-      } else {
-        setLed(offColor, mw,rmLed, ma);    
-      }
-    }
-  } else {
-    for (let i = 30; i <= 60; i++) {
-      let mw = 5;
-      if (i%5 === 0 ){
-        mw = 15;
-      }
-      let ma = minToAngle(i);
-      if (i <= im) {
-        setLed(minColor, mw,rmLed, ma);            
-      } else {
-        setLed(offColor, mw,rmLed, ma);    
-      }
-    }
-  }  
-
-/*
-  let dAngle = 270;
-  for (dAngle = 270; dAngle < 360; dAngle +=6) {
-    let minWeight = 5;
-    if (dAngle%5 === 0)   {
-      //setLed(hourColor, 15,rhLed, dAngle);
-      minWeight = 15;
-    }
-    setLed(minColor,minWeight, rmLed, dAngle)
+  i = 0;
+  max = 30;
+  if ( im >= 30 ) {
+    i = 30;
+    max = 60;
   }
-  for (dAngle = 0; dAngle <= 90; dAngle +=6) {
-    let hColor = offColor;
-    let mColor = offColor;
-    let minWeight = 5;
-    if (dAngle%5 === 0)   {
-      //setLed(hColor, 15,rhLed, dAngle);
-      minWeight = 15;
+  for (; i <= max ; i++) {
+     let mw = smallLed;
+    if (i%5 === 0 ){
+      mw = bigLed;
     }
-    setLed(mColor,minWeight, rmLed, dAngle)
+    let ma = minToAngle(i);
+    if (i <= im) {
+      setLed(minColor, mw,rmLed, ma);            
+    } else {
+      setLed(offColor, mw,rmLed, ma);    
+    }
   }
-*/
   frameRate(10);
 }

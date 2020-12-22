@@ -1,13 +1,13 @@
 // toCartesian calculates point coordinates based on coordinates of
-// center, mRadius and angle (in degrees)
+// center, radius and angle (in degrees)
 function toCartesian(x, y, r, a) {
   // Get angle as radians
-  const fa = a*(PI/180);
+  const rad = a*(PI/180);
   // Convert coordinates
-  const dx = r* cos(fa);
-  const dy = r* sin(fa);
+  const deltaX = r*cos(rad);
+  const deltaY = r*sin(rad);
   // Return array of two cartesian coordinates: x and y
-  return [x+dx, y+dy];
+  return [x+deltaX, y+deltaY];
 }
 // drawDial draws Clock dial based on center coordinates, mRadius, length of dial
 // mark and bool flag (true in case of half dial, false otherwise)
@@ -24,13 +24,8 @@ function drawDial(x0, y0, rs, delta, isHalf) {
   }
 }
 // Variables
-var m = 0;
-var minutes=0;
-let hours=0;
-let mAngle=0;
-let hAngle=0;
+let m = 0;
 
-// Function 'setup' and 'draw' required by p5 lib.
 let button;
 let runMode = false;
 
@@ -51,7 +46,7 @@ function setButton(){
   button.position(375,500);
   button.mousePressed(changeRunMode)
 }
-
+// Function 'setup' and 'draw' required by p5 lib.
 function setup() {
   createCanvas(1280, 720);
   setButton();
@@ -82,14 +77,15 @@ function draw() {
     if (m === 720) {
       m = 0;
     }
-    minutes = m%60;
-    hours = m/60;
   }
-  mAngle = minutes*6 - 90; // 360/60  
+  let minutes = m%60;
+  let hours = m/60;
+
+  let mAngle = minutes*6 - 90; // 360/60  
   if (mAngle < 0 ) {
     mAngle += 360;
   }
-  hAngle = hours*30 - 90 // 360/12
+  let hAngle = hours*30 - 90 // 360/12
   if (hAngle < 0 ) {
     hAngle += 360;
   }
@@ -193,9 +189,9 @@ function draw() {
     }
   }
   // Hours Led
-  let ih = Math.floor(hours);
   let i = 0;
   let max = 6;
+  let ih = Math.floor(hours);
   if (ih >= 6) {
     i = 6;
     max = 12;
@@ -209,15 +205,15 @@ function draw() {
     }
   }
   // Minutes Led
-  let im = Math.floor(minutes);
   i = 0;
   max = 30;
+  let im = Math.floor(minutes);
   if ( im >= 30 ) {
     i = 30;
     max = 60;
   }
   for (; i <= max ; i++) {
-     let mw = smallLed;
+    let mw = smallLed;
     if (i%5 === 0 ){
       mw = bigLed;
     }

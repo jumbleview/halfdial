@@ -1,3 +1,38 @@
+
+// Variables
+let m = 0;
+
+let button;
+let runMode = false;
+
+const xClock = 200;
+const y = 200;
+const xDial = 700;
+const xHalfDial = 1050;
+const mRadius = 130;
+const hRadius = 50;
+
+const xLed = 700;
+const yLed = 600;
+
+const xLed2 = 1050
+
+const rmLed = 140;
+const rhLed = 60;
+const rmLed2 = 100;
+
+const xDigital = 170;
+const yDigital = 550
+const xButton = 140;
+const yButton = 600;
+
+const xCanvas = 1300;
+const yCanvas = 820;
+
+const deltaMin = [315, 345,15, 45];
+const deltaMinInv = [ 45, 15, 345, 315];
+
+
 // toCartesian calculates point coordinates based on coordinates of
 // center, radius and angle (in degrees)
 function toCartesian(x, y, r, a) {
@@ -23,11 +58,6 @@ function drawDial(x0, y0, rs, delta, isHalf) {
     line(startMark[0],startMark[1],endMark[0],endMark[1]);
   }
 }
-// Variables
-let m = 0;
-
-let button;
-let runMode = false;
 
 function changeRunMode() {
   runMode = !runMode;
@@ -43,29 +73,16 @@ function setButton(){
   button.style('font-size', '50px');
   let col = color(0,128,255); //use color instead of fill
   button.style('color',col);
-  button.position(375,500);
+  button.position(xButton,yButton);
   button.mousePressed(changeRunMode)
 }
 // Function 'setup' and 'draw' required by p5 lib.
 function setup() {
-  createCanvas(1280, 720);
+  createCanvas(xCanvas, yCanvas);
   setButton();
 }
 
 function draw() {
-  const xClock = 200;
-  const y = 200;
-  const xDial = 700;
-  const xHalfDial = 1050;
-  const xDigital = 10;
-  const yDigital = 35
-  const mRadius = 130;
-  const hRadius = 90;
-
-  const xLed = 900;
-  const yLed = 525;
-  const rmLed = 140;
-  const rhLed = 90;
 
   background(220);
   drawDial(xClock, y, mRadius + 15, 15, false); 
@@ -138,9 +155,9 @@ function draw() {
     arc(xHalfDial, y, 2*hRadius, 2*hRadius, radians(180 - hAngle), radians(90))
   }
  
-  // Led Half Dial Clock
+  // Half Dial Led Clock
 
-  const smallLed = 5;
+  const smallLed = 7;
   const bigLed = 15;
   
   mAngle = Math.floor(mAngle);
@@ -154,6 +171,14 @@ function draw() {
     stroke(ledColor[0],ledColor[1],ledColor[2]);
     point(dot[0], dot[1]);    
   }
+
+  const setLed2 = function(ledColor, weight,r,  a) {
+    let dot = toCartesian(xLed2, yLed, r, a);
+    strokeWeight(weight);
+    stroke(ledColor[0],ledColor[1],ledColor[2]);
+    point(dot[0], dot[1]);    
+  }
+
   const hourToAngle = function (h) {
     if (h < 6) {
       if (h < 3) {
@@ -199,9 +224,11 @@ function draw() {
   for (; i <= max ; i++) {
     let ha = hourToAngle(i);
     if (i <= ih) {
-      setLed(hourColor, bigLed,rhLed, ha);            
+      setLed(hourColor, bigLed,rhLed, ha); 
+      setLed2(hourColor, bigLed,rhLed, ha);                  
     } else {
-      setLed(offColor, bigLed,rhLed, ha);    
+      setLed(offColor, bigLed,rhLed, ha);
+      setLed2(offColor, bigLed,rhLed, ha);          
     }
   }
   // Minutes Led
@@ -214,15 +241,34 @@ function draw() {
   }
   for (; i <= max ; i++) {
     let mw = smallLed;
-    if (i%5 === 0 ){
+    md =i%5;  
+    if ( md === 0 ){
       mw = bigLed;
     }
     let ma = minToAngle(i);
     if (i <= im) {
-      setLed(minColor, mw,rmLed, ma);            
+      setLed(minColor, mw,rmLed, ma);
+      if (mw === bigLed) {
+        setLed2(minColor, mw,rmLed, ma);
+      }
     } else {
       setLed(offColor, mw,rmLed, ma);    
+      if (mw === bigLed) {
+        setLed2(offColor, mw,rmLed, ma);    
+      }
     }
   }
-  frameRate(10);
+  let dim = im%5
+  for (let j = 0; j < 4; j++) {
+    let angle = deltaMin[j]
+    if (max === 60) {
+      angle = deltaMinInv[j]
+    }
+    if (j < dim) { // turn leds on
+      setLed2(minColor, smallLed,rmLed2, angle);
+    } else {
+      setLed2(offColor, smallLed,rmLed2, angle);
+    }
+  }
+  frameRate(5);
 }

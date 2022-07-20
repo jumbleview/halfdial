@@ -165,20 +165,13 @@ function draw() {
   const minColor = [255,255,255];
   const hourColor = [0,255,0];
   const offColor = [147, 150, 149];
-  const setLed = function(ledColor, weight,r,  a) {
-    let dot = toCartesian(xLed, yLed, r, a);
+  const setLed = function(ledColor, weight,cX, cY, r,  a) {
+    let dot = toCartesian(cX, cY, r, a);
     strokeWeight(weight);
     stroke(ledColor[0],ledColor[1],ledColor[2]);
     point(dot[0], dot[1]);    
   }
-
-  const setLed2 = function(ledColor, weight,r,  a) {
-    let dot = toCartesian(xLed2, yLed, r, a);
-    strokeWeight(weight);
-    stroke(ledColor[0],ledColor[1],ledColor[2]);
-    point(dot[0], dot[1]);    
-  }
-
+  
   const hourToAngle = function (h) {
     if (h < 6) {
       if (h < 3) {
@@ -224,11 +217,11 @@ function draw() {
   for (; i <= max ; i++) {
     let ha = hourToAngle(i);
     if (i <= ih) {
-      setLed(hourColor, bigLed,rhLed, ha); 
-      setLed2(hourColor, bigLed,rhLed, ha);                  
+      setLed(hourColor, bigLed,xLed, yLed, rhLed, ha); 
+      setLed(hourColor, bigLed,xLed2, yLed, rhLed, ha);                  
     } else {
-      setLed(offColor, bigLed,rhLed, ha);
-      setLed2(offColor, bigLed,rhLed, ha);          
+      setLed(offColor, bigLed,xLed, yLed, rhLed, ha);
+      setLed(offColor, bigLed,xLed2, yLed,rhLed, ha);          
     }
   }
   // Minutes Led
@@ -247,17 +240,18 @@ function draw() {
     }
     let ma = minToAngle(i);
     if (i <= im) {
-      setLed(minColor, mw,rmLed, ma);
+      setLed(minColor, mw,xLed, yLed, rmLed, ma);
       if (mw === bigLed) {
-        setLed2(minColor, mw,rmLed, ma);
+        setLed(minColor, mw,xLed2, yLed, rmLed, ma);
       }
     } else {
-      setLed(offColor, mw,rmLed, ma);    
+      setLed(offColor, mw,xLed, yLed, rmLed, ma);    
       if (mw === bigLed) {
-        setLed2(offColor, mw,rmLed, ma);    
+        setLed(offColor, mw,xLed2, yLed,rmLed, ma);    
       }
     }
   }
+  // Delta minutes led (for second LED halfdail - four leds)
   let dim = im%5
   for (let j = 0; j < 4; j++) {
     let angle = deltaMin[j]
@@ -265,9 +259,9 @@ function draw() {
       angle = deltaMinInv[j]
     }
     if (j < dim) { // turn leds on
-      setLed2(minColor, smallLed,rmLed2, angle);
+      setLed(minColor, smallLed,xLed2, yLed,rmLed2, angle);
     } else {
-      setLed2(offColor, smallLed,rmLed2, angle);
+      setLed(offColor, smallLed,xLed2, yLed, rmLed2, angle);
     }
   }
   frameRate(5);

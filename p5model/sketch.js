@@ -5,6 +5,8 @@ let m = 0;
 let button;
 let runMode = false;
 
+let slider;
+
 const xClock = 200;
 const y = 200;
 const xDial = 700;
@@ -21,10 +23,15 @@ const rmLed = 140;
 const rhLed = 60;
 const rmLed2 = 100;
 
+const xSlider = 110;
+const ySlider =475;
+
 const xDigital = 100;
 const yDigital = 650
 const xButton = 140;
 const yButton = 700;
+
+
 
 const xCanvas = 1300;
 const yCanvas = 820;
@@ -74,12 +81,20 @@ function setButton(){
   let col = color(0,128,255); //use color instead of fill
   button.style('color',col);
   button.position(xButton,yButton);
-  button.mousePressed(changeRunMode)
+  button.mousePressed(changeRunMode);
+}
+
+function setSlider(){
+  slider = createSlider(1,15,5);
+  slider.position(xSlider, ySlider);
+  //slider.style('width','80px');
+  slider.size(200,80)
 }
 // Function 'setup' and 'draw' required by p5 lib.
 function setup() {
   createCanvas(xCanvas, yCanvas);
   setButton();
+  setSlider();
 }
 
 function draw() {
@@ -272,5 +287,6 @@ function draw() {
       setLed(offColor, smallLed,xLed2, yLed, rmLed2, angle);
     }
   }
-  frameRate(5);
+  let fRate = slider.value()
+  frameRate(fRate);
 }

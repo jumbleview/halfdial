@@ -21,10 +21,10 @@ const rmLed = 140;
 const rhLed = 60;
 const rmLed2 = 100;
 
-const xDigital = 170;
-const yDigital = 550
+const xDigital = 100;
+const yDigital = 650
 const xButton = 140;
-const yButton = 600;
+const yButton = 700;
 
 const xCanvas = 1300;
 const yCanvas = 820;
@@ -111,7 +111,6 @@ function draw() {
     hAngle += 360;
   }
   // Digital Clock
-  textSize(28);
   let sm = minutes.toFixed(0);  
   let sh = Math.floor(hours).toFixed(0);
 
@@ -121,9 +120,10 @@ function draw() {
   if (sm.length === 1 ) {
     sm = "0" + sm
   }
-
+  textSize(90);
   let simTime = sh + ":" + sm ;
-  text(simTime,xDigital,yDigital); 
+  text(simTime,xDigital,yDigital);
+  textSize(28);
   text("12", xLed -20, yLed - rmLed -20)
   text("3 / 9", xLed + rmLed + 20, yLed + 10)
   text("6", xLed -10, yLed + rmLed + 40)

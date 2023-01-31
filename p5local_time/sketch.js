@@ -84,6 +84,10 @@ function setup() {
 
 function draw() {
 
+  const minColor = [255,255,255];
+  const hourColor = [0,255,0];
+  const offColor = [147, 150, 149];
+
   background(220);
   drawDial(xClock, y, mRadius + 15, 15, false); 
   drawDial(xDial, y, mRadius + 15, 15, false);  
@@ -128,27 +132,33 @@ function draw() {
   noFill()
   strokeWeight(10);
   // Regular Clock with Hands
-  stroke(255, 255, 255); // Clock minutes hand (White)
+  stroke.apply(null, minColor); // Clock minutes hand (White)
   var newPos = toCartesian(xClock, y, mRadius, mAngle);
   line(xClock, y, newPos[0], newPos[1]);
-  stroke(0,255, 0);   // Hours hand (green)
+  stroke.apply(null,hourColor);   // Hours hand (green)
   var newPosh = toCartesian(xClock, y, hRadius, hAngle);
   line(xClock, y, newPosh[0], newPosh[1]);
 
   // Full Dial Arcs Clock
-  stroke(255, 255, 255); // Clock minutes  (White)
+  stroke.apply(null,offColor)
+  circle(xDial, y, 2*mRadius)
+  circle(xDial, y, 2*hRadius)
+  stroke.apply(null,minColor); // Clock minutes  (White)
   arc(xDial, y, 2*mRadius, 2*mRadius, radians(270), radians(mAngle))
-  stroke(0, 255, 0); // Clock hours (green)
+  stroke.apply(null,hourColor); // Clock hours (green)
   arc(xDial, y, 2*hRadius, 2*hRadius, radians(270), radians(hAngle))
 
   // Half Dial Arc Clock
-  stroke(255, 255, 255); // Clock minutes (White)
+  stroke.apply(null,offColor)
+  arc(xHalfDial, y, 2*hRadius, 2*hRadius, radians(270), radians(90))
+  arc(xHalfDial, y, 2*mRadius, 2*mRadius, radians(270), radians(90))
+  stroke.apply(null, minColor); // Clock minutes (White)
   if (mAngle <= 90 ||  mAngle >= 270) {
     arc(xHalfDial, y, 2*mRadius, 2*mRadius, radians(270), radians(mAngle))
   } else {
     arc(xHalfDial, y, 2*mRadius, 2*mRadius, radians(180 - mAngle), radians(90))
   }
-  stroke(0, 255, 0); // Clock hours (Green)
+  stroke.apply(null, hourColor);// Clock hours (Green)
   if (hAngle < 90 ||  hAngle >= 270) {
     arc(xHalfDial, y, 2*hRadius, 2*hRadius, radians(270), radians(hAngle))
   } else {
@@ -162,9 +172,7 @@ function draw() {
   
   mAngle = Math.floor(mAngle);
   hAngle = Math.floor(hAngle);
-  const minColor = [255,255,255];
-  const hourColor = [0,255,0];
-  const offColor = [147, 150, 149];
+
   const setLed = function(ledColor, weight,cX, cY, r,  a) {
     let dot = toCartesian(cX, cY, r, a);
     strokeWeight(weight);

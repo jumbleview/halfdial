@@ -21,6 +21,9 @@ const rmLed = 140;
 const rhLed = 60;
 const rmLed2 = 100;
 
+const xAM = 175;
+const yAM =  550
+
 const xDigital = 50;
 const yDigital = 650
 
@@ -30,7 +33,7 @@ const yCanvas = 820;
 const deltaMin = [315, 345,15, 45];
 const deltaMinInv = [ 45, 15, 345, 315];
 
-// To exract hous,minutes and secodns out of current date string
+// To exract hours,minutes and seconds out of current date string
 const timeRx = new RegExp(/(\d\d):(\d\d):(\d\d)/)
 
 
@@ -79,7 +82,7 @@ function draw() {
   const  date = new Date();
   arTime = timeRx.exec(date);
   let hours =parseInt(arTime[1]);
-  let AM = hours < 12;
+  let isAM = hours < 12;
   hours = hours%12;
   if (hours===0) {
     hours = 12
@@ -95,6 +98,12 @@ function draw() {
     hAngle += 360;
   }
   // Digital Clock
+  textSize(70);
+  let dayPart = "PM"
+  if (isAM) {
+    dayPart = "AM"
+  }
+  text(dayPart,xAM,yAM);
   textSize(90);
   let sh = Math.floor(hours).toFixed(0);
 
@@ -107,6 +116,8 @@ function draw() {
   text("12", xLed -20, yLed - rmLed -20)
   text("3 / 9", xLed + rmLed + 20, yLed + 10)
   text("6", xLed -10, yLed + rmLed + 40)
+
+  
 
 
   noFill()

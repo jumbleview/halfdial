@@ -21,16 +21,17 @@ const rmLed = 140;
 const rhLed = 60;
 const rmLed2 = 100;
 
-const xDigital = 100;
+const xDigital = 50;
 const yDigital = 650
-const xButton = 140;
-const yButton = 700;
 
 const xCanvas = 1300;
 const yCanvas = 820;
 
 const deltaMin = [315, 345,15, 45];
 const deltaMinInv = [ 45, 15, 345, 315];
+
+// To exract hous,minutes and secodns out of current date string
+const timeRx = new RegExp(/(\d\d):(\d\d):(\d\d)/)
 
 
 // toCartesian calculates point coordinates based on coordinates of
@@ -59,27 +60,9 @@ function drawDial(x0, y0, rs, delta, isHalf) {
   }
 }
 
-function changeRunMode() {
-  runMode = !runMode;
-  button.remove();
-  setButton();
-}
-function setButton(){
-  if (runMode) {
-    button = createButton('stop');
-  } else {
-    button = createButton('start');
-  }
-  button.style('font-size', '50px');
-  let col = color(0,128,255); //use color instead of fill
-  button.style('color',col);
-  button.position(xButton,yButton);
-  button.mousePressed(changeRunMode)
-}
 // Function 'setup' and 'draw' required by p5 lib.
 function setup() {
   createCanvas(xCanvas, yCanvas);
-  setButton();
 }
 
 function draw() {
@@ -93,14 +76,15 @@ function draw() {
   drawDial(xDial, y, mRadius + 15, 15, false);  
   drawDial(xHalfDial, y, mRadius + 15, 15, true); 
 
-  if (runMode) {
-    m++;
-    if (m === 720) {
-      m = 0;
-    }
+  const  date = new Date();
+  arTime = timeRx.exec(date);
+  let hours =parseInt(arTime[1]);
+  let AM = hours < 12;
+  hours = hours%12;
+  if (hours===0) {
+    hours = 12
   }
-  let minutes = m%60;
-  let hours = m/60;
+  let minutes = parseInt(arTime[2]);
 
   let mAngle = minutes*6 - 90; // 360/60  
   if (mAngle < 0 ) {
@@ -111,17 +95,13 @@ function draw() {
     hAngle += 360;
   }
   // Digital Clock
-  let sm = minutes.toFixed(0);  
+  textSize(90);
   let sh = Math.floor(hours).toFixed(0);
 
   if (sh.length === 1 ) {
     sh = "0" + sh
   }
-  if (sm.length === 1 ) {
-    sm = "0" + sm
-  }
-  textSize(90);
-  let simTime = sh + ":" + sm ;
+  let simTime = sh + ":" + arTime[2]  + ":" +  arTime[3] ;
   text(simTime,xDigital,yDigital);
   textSize(28);
   text("12", xLed -20, yLed - rmLed -20)
@@ -152,6 +132,7 @@ function draw() {
   stroke.apply(null,offColor)
   arc(xHalfDial, y, 2*hRadius, 2*hRadius, radians(270), radians(90))
   arc(xHalfDial, y, 2*mRadius, 2*mRadius, radians(270), radians(90))
+  //
   stroke.apply(null, minColor); // Clock minutes (White)
   if (mAngle <= 90 ||  mAngle >= 270) {
     arc(xHalfDial, y, 2*mRadius, 2*mRadius, radians(270), radians(mAngle))

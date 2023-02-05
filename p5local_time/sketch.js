@@ -28,7 +28,7 @@ const xDigital = 50;
 const yDigital = 650
 
 const xCanvas = 1300;
-const yCanvas = 820;
+const yCanvas = 864;
 
 const deltaMin = [315, 345,15, 45];
 const deltaMinInv = [ 45, 15, 345, 315];
@@ -63,6 +63,7 @@ function drawDial(x0, y0, rs, delta, isHalf) {
   }
 }
 
+let bg;
 // Function 'setup' and 'draw' required by p5 lib.
 function setup() {
   createCanvas(xCanvas, yCanvas);
@@ -75,6 +76,7 @@ function draw() {
   const offColor = [147, 150, 149];
 
   background(220);
+  // background(0, 153, 153);
   drawDial(xClock, y, mRadius + 15, 15, false); 
   drawDial(xDial, y, mRadius + 15, 15, false);  
   drawDial(xHalfDial, y, mRadius + 15, 15, true); 

@@ -34,7 +34,7 @@ const yButton = 700;
 
 
 const xCanvas = 1300;
-const yCanvas = 820;
+const yCanvas = 864;
 
 const deltaMin = [315, 345,15, 45];
 const deltaMinInv = [ 45, 15, 345, 315];

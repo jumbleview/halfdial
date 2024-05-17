@@ -75,7 +75,8 @@ function draw() {
   const hourColor = [0,255,0];
   const offColor = [147, 150, 149];
 
-  background(220);
+  //background(220);
+  background(234, 218, 203);
   // background(0, 153, 153);
   drawDial(xClock, y, mRadius + 15, 15, false); 
   drawDial(xDial, y, mRadius + 15, 15, false);  

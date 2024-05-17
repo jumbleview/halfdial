@@ -53,3 +53,7 @@ dkms.conf
 
 # js consol log
 *.log
+
+# auto saves
+*.autosave
+*.atsuo

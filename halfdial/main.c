@@ -232,7 +232,6 @@ ISR(TIMER2_OVF_vect)
 	static uint8_t minutes = 0;
 	static uint8_t secs = 0;
 	static uint8_t	clockTick = 0;
-	// static uint8_t	modeButtonTick = 0;
 	static bool hoursButton = false;
 	static bool minutesButton = false;
 	static bool modeButton = false;
